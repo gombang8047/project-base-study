@@ -47,5 +47,21 @@
   "emmet.includeLanguages": {
     "javascript": "javascriptreact",
     "typescript": "typescriptreact"
-  }
+  },
+  /* 2. React 및 JS 파일 강제 적용 */
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  /* 3. 기타 편의 설정 (선택 사항) */
+  "files.autoSave": "off" // 자동 저장은 끄는 게 정신 건강에 좋습니다 (수동 저장 시 포맷팅 확인 위해)
 }

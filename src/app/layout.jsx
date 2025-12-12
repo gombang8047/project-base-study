@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 // JS에서는 타입 없이 객체만 내보내면 됩니다.
 export const metadata = {
-  title: "My Board Project",
+  title: "Krafton Jungle",
   description: "Next.js Board Warm-up Project (JS)",
 };
 

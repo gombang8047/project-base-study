@@ -28,7 +28,7 @@ export default function LoginPage() {
             로그인
           </Button>
           <p className="text-center text-sm text-gray-600">
-            지문 · 얼굴 인증을 설정했다면
+            회원가입을 하지 않았다면
           </p>
           <Button className="h-10 w-full">회원가입</Button>
         </div>

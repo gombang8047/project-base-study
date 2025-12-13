@@ -15,11 +15,11 @@ export default function LoginPage() {
       <div className="w-full max-w-6xl space-y-4 rounded-lg border border-gray-400 p-6 md:w-80 lg:w-90 xl:w-100 2xl:w-120">
         <div>
           <Input
-            className="h-12 rounded-b-none border-gray-400"
+            className="m-[1px] -mb-px h-12 rounded-b-none border-gray-400"
             placeholder="아이디 또는 전화번호"
           />
           <Input
-            className="h-12 rounded-t-none border-gray-400"
+            className="m-[1px] h-12 rounded-t-none border-gray-400"
             placeholder="비밀번호"
           />
         </div>

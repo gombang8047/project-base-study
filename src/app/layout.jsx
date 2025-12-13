@@ -1,9 +1,16 @@
-import { Inter } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "./provider";
-import { Toaster } from "sonner";
 
-const inter = Inter({ subsets: ["latin"] });
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 
 // JS에서는 타입 없이 객체만 내보내면 됩니다.
 export const metadata = {
@@ -13,11 +20,14 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="ko">
-      <body className={inter.className}>
+    <html lang="en">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
         <Providers>
-          {children}
-          <Toaster />
+          <div className="mx-auto flex min-h-screen max-w-screen-md flex-col border-x border-gray-100 bg-white shadow-2xl">
+            <main className="w-full flex-1">{children}</main>
+          </div>
         </Providers>
       </body>
     </html>

@@ -5,7 +5,7 @@
     --background: #f3f4f6;
     /* 모든 페이지의 배경색 지정  */
     /* #0a0a0a */
-    --foreground: #f3f4f6;
+    --foreground: #000000;
     /* 모든 페이지의 컨텐츠 색(글자) 지정 */
     /* #ededed */
   }

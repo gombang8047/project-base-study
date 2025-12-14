@@ -10,3 +10,15 @@ const signupUserApi = async (data) => {
 };
 
 export { signupUserApi };
+
+const loginUserApi = async (data) => {
+  // 서버 요청 시뮬레이션
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      console.log("서버로 전송된 데이터:", data);
+      resolve({ message: "Success" });
+    }, 1000);
+  });
+};
+
+export { loginUserApi };

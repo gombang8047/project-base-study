@@ -13,6 +13,8 @@ import {
   Bell,
   User,
   Loader2,
+  MoreVertical,
+  Flame,
 } from "lucide-react";
 import CategoryItem from "@/components/main/Category";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -22,10 +24,36 @@ import PostContainer from "@/components/main/PostContaioner";
 import { useQuery } from "@tanstack/react-query";
 import { getPostsApi } from "@/lib/api";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function Home() {
   const router = useRouter();
+
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const token = searchParams.get("token");
+
+    if (token) {
+      // 토큰 저장
+      localStorage.setItem("token", token);
+
+      // URL에서 토큰 제거 (깔끔하게)
+      router.replace("/main");
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    router.push("/auth/login");
+  };
 
   // 목데이터 가져오기
   const { data: posts, isLoading } = useQuery({
@@ -56,13 +84,33 @@ export default function Home() {
           <Button className="border border-0 text-gray-700">
             <Bell></Bell>
           </Button>
-          <div className="pr-2">
-            <Avatar>
-              <AvatarImage src="/default-avatar.png" alt="프로필" />
-              <AvatarFallback>
-                <User className="h-5 w-5" />
-              </AvatarFallback>
-            </Avatar>
+          <div className="flex items-center justify-center pr-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  className="items-center justify-center focus:outline-none focus-visible:ring-0"
+                  variant="ghost"
+                  size="icon"
+                >
+                  <Avatar>
+                    <AvatarImage src="/default-avatar.png" alt="프로필" />
+                    <AvatarFallback>
+                      <User className="h-5 w-5" />
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="items-center justify-center bg-white p-0 shadow-none">
+                <DropdownMenuItem>
+                  <Button
+                    onClick={handleLogout}
+                    className="items-center justify-center border border-0 font-bold text-red-500 hover:bg-white"
+                  >
+                    <Flame></Flame>로그아웃
+                  </Button>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
           <Button
             onClick={() => router.push("/post/create")}

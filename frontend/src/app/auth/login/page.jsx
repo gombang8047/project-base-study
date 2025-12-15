@@ -10,9 +10,18 @@ import { useMutation } from "@tanstack/react-query";
 import { loginSchema } from "@/lib/schemas";
 import { useRouter } from "next/navigation";
 import { GoogleButton } from "@/components/auth/GoogleButton";
+import { useEffect } from "react";
 
 export default function LoginPage() {
   const router = useRouter();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      router.push("/main");
+    }
+  }, []);
 
   const {
     register,

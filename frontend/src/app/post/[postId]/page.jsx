@@ -39,6 +39,11 @@ export default function Post() {
     queryFn: () => getPostDetailApi(postId),
   });
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    router.push("/auth/login");
+  };
+
   if (isLoading)
     return (
       <div className="flex h-full w-full items-center justify-center p-10">
@@ -67,13 +72,33 @@ export default function Post() {
           <Button className="border border-0 text-gray-700">
             <Bell></Bell>
           </Button>
-          <div className="pr-2">
-            <Avatar>
-              <AvatarImage src="/default-avatar.png" alt="프로필" />
-              <AvatarFallback>
-                <User className="h-5 w-5" />
-              </AvatarFallback>
-            </Avatar>
+          <div className="flex items-center justify-center pr-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  className="items-center justify-center focus:outline-none focus-visible:ring-0"
+                  variant="ghost"
+                  size="icon"
+                >
+                  <Avatar>
+                    <AvatarImage src="/default-avatar.png" alt="프로필" />
+                    <AvatarFallback>
+                      <User className="h-5 w-5" />
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="items-center justify-center bg-white p-0 shadow-none">
+                <DropdownMenuItem>
+                  <Button
+                    onClick={handleLogout}
+                    className="items-center justify-center border border-0 font-bold text-red-500 hover:bg-white"
+                  >
+                    <Flame></Flame>로그아웃
+                  </Button>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
           <Button
             onClick={() => router.push("/post/create")}

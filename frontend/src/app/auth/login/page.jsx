@@ -9,6 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { loginSchema } from "@/lib/schemas";
 import { useRouter } from "next/navigation";
+import { GoogleButton } from "@/components/auth/GoogleButton";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -73,6 +74,7 @@ export default function LoginPage() {
             >
               로그인
             </Button>
+            <GoogleButton></GoogleButton>
             <p className="text-center text-sm text-gray-600">
               회원가입을 하지 않았다면
             </p>

@@ -3,19 +3,137 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  FileCodeCorner,
+  BookOpen,
+  Briefcase,
+  Wrench,
+  Search,
+  Bell,
+  User,
+  Loader2,
+} from "lucide-react";
+import CategoryItem from "@/components/main/Category";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import PostContainer from "@/components/main/PostContaioner";
+import { useQuery } from "@tanstack/react-query";
+import { getPostsApi } from "@/lib/api";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
-  const handleClick = () => {
-    console.log("버튼이 클릭되었습니다.");
-  };
+  const router = useRouter();
+
+  // 목데이터 가져오기
+  const { data: posts, isLoading } = useQuery({
+    queryKey: ["posts"],
+    queryFn: getPostsApi,
+  });
 
   return (
-    <div className="grid min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black dark:text-white">
-      <p>좋은데요</p>
-      <Input placeholder="이름 입력" />
-      <Button variant="destructive" onClick={handleClick}>
-        제출
-      </Button>
+    <div className="flex flex-col">
+      {/* 페이지 전체 박스 */}
+
+      <header className="sticky top-0 z-10 flex flex-row items-center justify-between border-b border-b-gray-400 bg-white pr-4 pl-4">
+        {/* 헤더와 검색 작성하기 박스 */}
+        <Link href="/main">
+          <Image
+            className="p-3"
+            src="/jungle.webp"
+            alt="Jungle Logo"
+            width={120}
+            height={10}
+          />
+        </Link>
+
+        <div className="flex flex-row items-center justify-center">
+          <Button className="border border-0 text-gray-700">
+            <Search></Search>
+          </Button>
+          <Button className="border border-0 text-gray-700">
+            <Bell></Bell>
+          </Button>
+          <div className="pr-2">
+            <Avatar>
+              <AvatarImage src="/default-avatar.png" alt="프로필" />
+              <AvatarFallback>
+                <User className="h-5 w-5" />
+              </AvatarFallback>
+            </Avatar>
+          </div>
+          <Button
+            onClick={() => router.push("/post/create")}
+            className="rounded-3xl border border-gray-700 bg-gray-700 text-white hover:bg-gray-700/80"
+          >
+            작성하기
+          </Button>
+        </div>
+      </header>
+
+      <div className="flex gap-10 p-13">
+        {/* 왼쪽 오른쪽 감싸는 박스 */}
+
+        <div className="sticky top-26 h-fit">
+          {/* 왼쪽 박스 */}
+          <div className="w-55 pb-20">
+            {/* 왼쪽 상단 */}
+            <p className="pb-3 text-2xl font-bold">나의 TIL 게시판</p>
+            <p className="text-gray-500">
+              오늘의 경험과 인사이트, 해결한 문제를 기록해보세요.
+            </p>
+          </div>
+          <div>
+            {/* 카테고리 */}
+
+            <Tabs defaultValue="dev">
+              <TabsList className="flex flex-col items-start">
+                <CategoryItem
+                  icon={FileCodeCorner}
+                  name="개발일기"
+                  value="dev"
+                  iconColor="green"
+                ></CategoryItem>
+                <CategoryItem
+                  icon={BookOpen}
+                  name="노트"
+                  value="note"
+                  iconColor="blue"
+                ></CategoryItem>
+                <CategoryItem
+                  icon={Briefcase}
+                  name="업무"
+                  value="work"
+                  iconColor="yellow"
+                ></CategoryItem>
+                <CategoryItem
+                  icon={Wrench}
+                  name="트러블 슈팅"
+                  value="trouble"
+                  iconColor="purple"
+                ></CategoryItem>
+              </TabsList>
+            </Tabs>
+          </div>
+        </div>
+        <div className="w-full">
+          {/* 오른쪽 박스 */}
+          {isLoading ? (
+            <div className="flex items-center justify-center p-10">
+              <Loader2 className="h-8 w-8 animate-spin text-[#09aa5c]" />
+            </div>
+          ) : (
+            posts?.map((post, index) => (
+              <Link key={post.id} href={`post/${post.id}`}>
+                <PostContainer key={post.id} {...post} />
+                {index < posts.length - 1 && <Separator />}
+              </Link>
+            ))
+          )}
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,3 +1,5 @@
+import MOCK_BLOG_DATA from "./mockData";
+
 // [임시] 회원가입 API 함수 (실제로는 lib/api.js 등으로 분리 권장)
 const signupUserApi = async (data) => {
   // 서버 요청 시뮬레이션
@@ -22,3 +24,26 @@ const loginUserApi = async (data) => {
 };
 
 export { loginUserApi };
+
+const getPostsApi = async () => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(MOCK_BLOG_DATA.user123.posts);
+    }, 500);
+  });
+};
+
+export { getPostsApi };
+
+const getPostDetailApi = async (postId) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const post = MOCK_BLOG_DATA.user123.posts.find(
+        (p) => p.id === Number(postId)
+      );
+      resolve(post);
+    }, 500);
+  });
+};
+
+export { getPostDetailApi };

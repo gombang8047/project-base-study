@@ -6,7 +6,11 @@ export const signupUserApi = async (email, password, username) => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password, username }),
   });
-  return res.json();
+  const data = res.json();
+  if (!res.ok) {
+    throw new Error(data.message || "이미 존재하는 아이디 입니다.");
+  }
+  return data;
 };
 
 export { signupUserApi };

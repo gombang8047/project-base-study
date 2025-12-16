@@ -38,8 +38,8 @@ export default function LoginPage() {
       localStorage.setItem("token", data.token);
       router.push("/main");
     },
-    onError: () => {
-      alert("로그인 실패");
+    onError: (error) => {
+      alert("로그인 실패 : " + error.message);
     },
   });
 

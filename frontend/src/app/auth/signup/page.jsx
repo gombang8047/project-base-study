@@ -34,6 +34,9 @@ export default function SignupPage() {
       alert("회원가입 성공");
       router.push("/auth/login");
     },
+    onError: (error) => {
+      alert("회원가입 실패: " + error.message);
+    },
   });
 
   const onSubmit = (data) => {

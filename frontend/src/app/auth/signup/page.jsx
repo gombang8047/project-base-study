@@ -9,10 +9,11 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { signupUserApi } from "@/lib/api";
-import { User, Lock, Mail, Phone, Calendar, PhoneIcon } from "lucide-react";
+import { User, Lock, Mail, Phone, PhoneIcon, Briefcase } from "lucide-react";
 import SignInput from "@/components/auth/SignInput";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -28,7 +29,7 @@ export default function SignupPage() {
 
   const signupMutation = useMutation({
     mutationFn: (data) =>
-      signupUserApi(data.email, data.password, data.username),
+      signupUserApi(data.email, data.password, data.username, data.role),
 
     onSuccess: (data) => {
       alert("회원가입 성공");
@@ -51,13 +52,15 @@ export default function SignupPage() {
       <div className="min-h-screen flex-col p-4">
         <header>
           <div>
-            <Image
-              className="p-4"
-              src="/jungle.webp"
-              alt="Jungle Logo"
-              width={150}
-              height={40}
-            />
+            <Link href="/auth/login">
+              <Image
+                className="p-4"
+                src="/jungle.webp"
+                alt="Jungle Logo"
+                width={150}
+                height={40}
+              />
+            </Link>
           </div>
         </header>
         <div className="item-center flex justify-center p-4 pt-20">
@@ -132,12 +135,12 @@ export default function SignupPage() {
               className="-mb-px rounded-b-none"
             ></SignInput>
             <SignInput
-              icon={Calendar}
+              icon={Briefcase}
               register={register}
-              name="calendar"
+              name="role"
               type="text"
-              placeholder="생년월일 8자리"
-              error={errors.calendar}
+              placeholder="직업"
+              error={errors.role}
               className="-mb-px rounded-none"
             ></SignInput>
             <div className="item-center m-[1px] flex w-full justify-center gap-2 rounded rounded-t-none border border-gray-300 p-1">

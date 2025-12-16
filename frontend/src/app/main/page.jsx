@@ -175,7 +175,17 @@ export default function Home() {
           ) : (
             posts?.map((post, index) => (
               <Link key={post.id} href={`post/${post.id}`}>
-                <PostContainer key={post.id} {...post} />
+                <PostContainer
+                  key={post.id}
+                  count={index + 1}
+                  title={post.title}
+                  summary={post.content}
+                  nickname={post.author.username}
+                  authorRole={post.author.role}
+                  profileImage={post.author.picture}
+                  likes={post.likeCount}
+                  views={post.viewCount}
+                />
                 {index < posts.length - 1 && <Separator />}
               </Link>
             ))

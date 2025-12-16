@@ -12,10 +12,11 @@ import {
   Flame,
   Loader2,
   CornerDownRight,
+  LogOut,
 } from "lucide-react";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import { getPostDetailApi } from "@/lib/api";
-import { useQuery } from "@tanstack/react-query";
+import { deletePostApi, getPostDetailApi } from "@/lib/api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -43,6 +44,20 @@ export default function Post() {
     localStorage.removeItem("token");
     router.push("/auth/login");
   };
+
+  const queryClient = useQueryClient();
+
+  const deletePost = useMutation({
+    mutationFn: (postId) => deletePostApi(postId),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["posts"]);
+      alert("삭제 성공");
+      router.push("/main");
+    },
+    onError: (error) => {
+      alert(error.message);
+    },
+  });
 
   if (isLoading)
     return (
@@ -94,7 +109,7 @@ export default function Post() {
                     onClick={handleLogout}
                     className="items-center justify-center border border-0 font-bold text-red-500 hover:bg-white"
                   >
-                    <Flame></Flame>로그아웃
+                    <LogOut></LogOut>로그아웃
                   </Button>
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -114,12 +129,16 @@ export default function Post() {
           <CardHeader className="mb-7 flex w-full flex-row justify-between">
             <div className="flex flex-row items-center gap-3">
               <Avatar>
-                <AvatarImage src={post?.profileImage} />
+                <AvatarImage src={post?.author?.picture} />
               </Avatar>
               <div className="flex flex-col">
                 {/* 이름과 직업 */}
-                <div className="text-sm font-bold">{post?.nickname}</div>
-                <div className="text-xs text-gray-400">{post?.authorRole}</div>
+                <div className="text-sm font-bold">
+                  {post?.author?.username}
+                </div>
+                <div className="text-xs text-gray-400">
+                  {post?.author?.role}
+                </div>
               </div>
             </div>
             <div className="flex flex-row items-center justify-center">
@@ -136,32 +155,37 @@ export default function Post() {
                     <MoreVertical className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem className="text-red-500">
-                    <Flame></Flame>신고
+                <DropdownMenuContent className="min-w-fit pr-4">
+                  <DropdownMenuItem
+                    onClick={() => deletePost.mutate(postId)}
+                    className="cursor-pointer font-bold text-red-500"
+                  >
+                    <Flame></Flame>삭제
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
           </CardHeader>
-          <CardContent>
-            <div>
+          <CardContent className="w-full">
+            <div className="w-full">
               {/* 제목과 내용과 사진과 좋아요 */}
-              <div className="flex flex-col items-center">
+              <div className="flex flex-col items-start">
                 {/* 제목과 내용 */}
                 <div className="text-lg">
                   <div className="mb-8 font-bold">{post?.title}</div>
-                  <div className="text-sm">{post?.summary}</div>
+                  <div className="text-sm whitespace-pre-wrap">
+                    {post?.content}
+                  </div>
                 </div>
               </div>
               <div className="mt-3 mb-3 text-sm text-gray-400">
-                {post?.createdAt}
+                {new Date(post?.createdAt).toLocaleString("ko-KR")}
               </div>
               <Separator />
               <div className="mt-2 flex gap-2 text-xs text-gray-400">
                 {/* 좋아요 */}
-                <span>좋아요 {post?.likes}</span>
-                <span>조회 {post?.views}</span>
+                <span>좋아요 {post?.likeCount}</span>
+                <span>조회 {post?.viewCount}</span>
               </div>
             </div>
           </CardContent>

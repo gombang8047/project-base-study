@@ -22,10 +22,7 @@ export const signupSchema = z
     confirmEmail: z
       .string()
       .email({ message: "❌올바른 이메일 형식을 입력해주세요." }),
-    calendar: z
-      .string()
-      .min(8, { message: "❌8자리가 아닙니다." })
-      .max(8, { message: "❌8자리가 아닙니다." }),
+    role: z.string().max(20, { message: "❌너무 길어요." }),
     phone: z
       .string()
       .min(11, { message: "❌11자리 숫자가 아닙니다." })

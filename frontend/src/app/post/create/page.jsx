@@ -1,6 +1,8 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { createPostApi } from "@/lib/api";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   ArrowLeft,
   Bold,
@@ -17,6 +19,26 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 export default function CreatePost() {
   const router = useRouter();
+
+  const queryClient = useQueryClient();
+
+  const createPost = useMutation({
+    mutationFn: (data) => createPostApi(data.title, data.content),
+
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(["posts"]);
+      console.log("작성 성공");
+      router.push("/main");
+    },
+    onError: (error) => {
+      alert(error.message);
+    },
+  });
+
+  const onSubmit = (data) => {
+    createPost.mutate(data);
+  };
+
   const [showTitle, setShowTitle] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -32,7 +54,10 @@ export default function CreatePost() {
           <Button className="border-gary-400 rounded-sm border text-gray-400 hover:bg-gray-400/10">
             임시 저장
           </Button>
-          <Button className="rounded-sm bg-[#09aa5c] text-white hover:bg-[#09aa5c]/80">
+          <Button
+            onClick={() => onSubmit({ title, content })}
+            className="rounded-sm bg-[#09aa5c] text-white hover:bg-[#09aa5c]/80"
+          >
             완료
           </Button>
         </div>

@@ -11,10 +11,10 @@ export class AuthService {
   generateJWT(user: any): string {
     const payload = {
       email: user.email,
-      sub: user.id,
+      id: user.id,
     };
     return jwt.sign(payload, JWT_SECRET, {
-      expiresIn: '7d',
+      expiresIn: '1d',
     });
   }
 
@@ -51,7 +51,12 @@ export class AuthService {
     return this.generateJWT(user);
   }
 
-  async signup(email: string, password: string, username: string) {
+  async signup(
+    email: string,
+    password: string,
+    username: string,
+    role: string,
+  ) {
     const exist = await this.prisma.user.findUnique({
       where: { email },
     });
@@ -66,6 +71,7 @@ export class AuthService {
         email,
         password: hashedPassword,
         username,
+        role,
       },
     });
     return this.generateJWT(user);

@@ -30,12 +30,19 @@ export class AuthController {
 
   @Post('signup')
   async signup(
-    @Body() body: { email: string; password: string; username: string },
+    @Body()
+    body: {
+      email: string;
+      password: string;
+      username: string;
+      role: string;
+    },
   ) {
     const token = await this.authService.signup(
       body.email,
       body.password,
       body.username,
+      body.role,
     );
     return { token };
   }

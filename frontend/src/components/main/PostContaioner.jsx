@@ -4,7 +4,7 @@ import { Card, CardHeader, CardContent } from "@/components/ui/card";
 
 const PostContainer = (props) => {
   const {
-    id,
+    count,
     title,
     summary,
     nickname,
@@ -17,7 +17,7 @@ const PostContainer = (props) => {
   return (
     <Card className="w-full border-0 pt-3">
       <div className="flex w-full flex-row">
-        <span className="pb-2 text-2xl font-bold">{id}</span>
+        <span className="pb-2 text-2xl font-bold">{count}</span>
         <div className="w-full">
           <CardHeader>
             <div className="flex flex-row items-center gap-2">

@@ -1,4 +1,12 @@
-import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 
@@ -18,5 +26,23 @@ export class AuthController {
     const token = this.authService.generateJWT(user);
     // 2. 프론트엔드로 리다이렉트 (토큰 포함)
     res.redirect(`http://localhost:3000/main?token=${token}`);
+  }
+
+  @Post('signup')
+  async signup(
+    @Body() body: { email: string; password: string; username: string },
+  ) {
+    const token = await this.authService.signup(
+      body.email,
+      body.password,
+      body.username,
+    );
+    return { token };
+  }
+
+  @Post('login')
+  async login(@Body() body: { email: string; password: string }) {
+    const token = await this.authService.login(body.email, body.password);
+    return { token };
   }
 }

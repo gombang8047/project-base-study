@@ -1,26 +1,23 @@
 import MOCK_BLOG_DATA from "./mockData";
 
-// [임시] 회원가입 API 함수 (실제로는 lib/api.js 등으로 분리 권장)
-const signupUserApi = async (data) => {
-  // 서버 요청 시뮬레이션
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      console.log("서버로 전송된 데이터:", data);
-      resolve({ message: "Success" });
-    }, 1000);
+export const signupUserApi = async (email, password, username) => {
+  const res = await fetch("http://localhost:8000/auth/signup", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password, username }),
   });
+  return res.json();
 };
 
 export { signupUserApi };
 
-const loginUserApi = async (data) => {
-  // 서버 요청 시뮬레이션
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      console.log("서버로 전송된 데이터:", data);
-      resolve({ message: "Success" });
-    }, 1000);
+const loginUserApi = async (email, password) => {
+  const res = await fetch("http://localhost:8000/auth/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
   });
+  return res.json();
 };
 
 export { loginUserApi };

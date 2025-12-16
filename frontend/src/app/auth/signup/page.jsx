@@ -12,8 +12,11 @@ import { signupUserApi } from "@/lib/api";
 import { User, Lock, Mail, Phone, Calendar, PhoneIcon } from "lucide-react";
 import SignInput from "@/components/auth/SignInput";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function SignupPage() {
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -24,13 +27,12 @@ export default function SignupPage() {
   });
 
   const signupMutation = useMutation({
-    mutationFn: signupUserApi,
+    mutationFn: (data) =>
+      signupUserApi(data.email, data.password, data.username),
 
     onSuccess: (data) => {
       alert("회원가입 성공");
-    },
-    onError: (error) => {
-      alert("회원가입 실패");
+      router.push("/auth/login");
     },
   });
 
@@ -60,10 +62,10 @@ export default function SignupPage() {
             <SignInput
               icon={User}
               register={register}
-              name="id"
+              name="email"
               type="text"
               placeholder="아이디"
-              error={errors.id}
+              error={errors.email}
               className="-mb-px rounded-b-none"
             ></SignInput>
             <SignInput
@@ -87,15 +89,15 @@ export default function SignupPage() {
             <SignInput
               icon={Mail}
               register={register}
-              name="email"
+              name="confirmEmail"
               type="text"
               placeholder="[선택] 이메일주소 (비밀번호 찾기 등 본인 확인용)"
-              error={errors.email}
+              error={errors.confirmEmail}
               className="rounded-t-none"
             ></SignInput>
             <div>
-              {errors.id && (
-                <p className="text-sm text-red-500">{errors.id.message}</p>
+              {errors.email && (
+                <p className="text-sm text-red-500">{errors.email.message}</p>
               )}
               {errors.password && (
                 <p className="text-sm text-red-500">
@@ -107,8 +109,10 @@ export default function SignupPage() {
                   {errors.confirmPassword.message}
                 </p>
               )}
-              {errors.email && (
-                <p className="text-sm text-red-500">{errors.email.message}</p>
+              {errors.confirmEmail && (
+                <p className="text-sm text-red-500">
+                  {errors.confirmEmail.message}
+                </p>
               )}
             </div>
           </div>
@@ -199,7 +203,7 @@ export default function SignupPage() {
         <div className="item-center flex justify-center p-4">
           <div className="w-full max-w-6xl md:w-80 lg:w-90 xl:w-100 2xl:w-120">
             <Button className="w-full bg-[#09aa5c] text-white hover:bg-[#09aa5c]/85">
-              인증요청
+              회원가입
             </Button>
           </div>
         </div>

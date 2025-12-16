@@ -33,13 +33,12 @@ export default function LoginPage() {
   });
 
   const loginMutation = useMutation({
-    mutationFn: loginUserApi,
-
+    mutationFn: (data) => loginUserApi(data.email, data.password),
     onSuccess: (data) => {
-      alert("로그인 성공");
+      localStorage.setItem("token", data.token);
       router.push("/main");
     },
-    onError: (error) => {
+    onError: () => {
       alert("로그인 실패");
     },
   });
@@ -64,9 +63,9 @@ export default function LoginPage() {
         <div className="w-full max-w-6xl space-y-4 rounded-lg border border-gray-400 p-6 md:w-80 lg:w-90 xl:w-100 2xl:w-120">
           <div>
             <Input
-              {...register("id")}
+              {...register("email")}
               type="text"
-              className={`m-[1px] -mb-px h-12 rounded-b-none border-gray-400 ${errors.id ? "border-red-500" : "border-[#09aa5c]"}`}
+              className={`m-[1px] -mb-px h-12 rounded-b-none border-gray-400 ${errors.email ? "border-red-500" : "border-[#09aa5c]"}`}
               placeholder="아이디 또는 전화번호"
             />
             <Input

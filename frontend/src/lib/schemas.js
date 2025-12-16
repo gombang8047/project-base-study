@@ -10,11 +10,7 @@ export const signupSchema = z
       .max(10, { message: "❌닉네임은 10글자 이하여야 합니다." }),
     email: z
       .string()
-      .email({ message: "❌올바른 이메일 형식을 입력해주세요." }),
-    id: z
-      .string()
       .min(6, { message: "❌아이디는 최소 6글자 이상이여야 합니다." })
-      .max(15, { message: "❌15글자 이상은 좀...." })
       .regex(/[a-zA-Z]/, { message: "❌영문자를 포함해야 합니다." })
       .regex(/[0-9]/, { message: "❌숫자를 포함해야 합니다." }),
     password: z
@@ -23,6 +19,9 @@ export const signupSchema = z
       .regex(/[a-zA-Z]/, { message: "❌영문자를 포함해야 합니다." })
       .regex(/[0-9]/, { message: "❌숫자를 포함해야 합니다." }),
     confirmPassword: z.string(),
+    confirmEmail: z
+      .string()
+      .email({ message: "❌올바른 이메일 형식을 입력해주세요." }),
     calendar: z
       .string()
       .min(8, { message: "❌8자리가 아닙니다." })
@@ -39,10 +38,9 @@ export const signupSchema = z
   });
 
 export const loginSchema = z.object({
-  id: z
+  email: z
     .string()
     .min(6, { message: "❌아이디는 최소 6글자 이상이여야 합니다." })
-    .max(15, { message: "❌15글자 이상은 좀...." })
     .regex(/[a-zA-Z]/, { message: "❌영문자를 포함해야 합니다." })
     .regex(/[0-9]/, { message: "❌숫자를 포함해야 합니다." }),
   password: z

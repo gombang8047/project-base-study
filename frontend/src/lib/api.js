@@ -26,8 +26,8 @@ const loginUserApi = async (email, password) => {
 
 export { loginUserApi };
 
-const getPostsApi = async () => {
-  const res = await fetch("http://localhost:8000/posts", {});
+const getPostsApi = async (page = 1) => {
+  const res = await fetch(`http://localhost:8000/posts?page=${page}&limit=10`);
   return await res.json();
 };
 
@@ -47,7 +47,7 @@ const createPostApi = async (title, content) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`, // ← JWT 토큰 헤더에 추가!
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({ title, content }),
   });
@@ -77,3 +77,38 @@ const deletePostApi = async (postId) => {
 };
 
 export { deletePostApi };
+
+const getMe = async () => {
+  const token = localStorage.getItem("token");
+  const res = await fetch("http://localhost:8000/auth/me", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error("나의 정보 가져오기 실패");
+  }
+  return data;
+};
+
+export { getMe };
+
+const updatePostApi = async (postId, title, content) => {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`http://localhost:8000/posts/${postId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ title, content }),
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.message || "수정 실패");
+  }
+
+  return data;
+};
+
+export { updatePostApi };

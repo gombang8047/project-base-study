@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -51,5 +52,11 @@ export class AuthController {
   async login(@Body() body: { email: string; password: string }) {
     const token = await this.authService.login(body.email, body.password);
     return { token };
+  }
+
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  async getMe(@Req() req) {
+    return this.authService.findById(req.user.userId);
   }
 }

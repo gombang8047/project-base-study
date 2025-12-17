@@ -5,7 +5,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class PostsService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll() {
+  async findAll(skip: number, take: number) {
     return await this.prisma.post.findMany({
       include: {
         author: {
@@ -18,6 +18,8 @@ export class PostsService {
           },
         },
       },
+      skip,
+      take,
       orderBy: { createdAt: 'desc' },
     });
   }
@@ -53,6 +55,19 @@ export class PostsService {
 
     return await this.prisma.post.delete({
       where: { id },
+    });
+  }
+
+  async edit(id: number, userId: number, title: string, content: string) {
+    const post = await this.prisma.post.findUnique({
+      where: { id },
+    });
+    if (post?.authorId !== userId) {
+      throw new Error('본인의 게시물만 수정할 수 있습니다');
+    }
+    return await this.prisma.post.update({
+      where: { id },
+      data: { title, content },
     });
   }
 }

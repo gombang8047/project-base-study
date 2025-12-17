@@ -1,8 +1,8 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { createPostApi } from "@/lib/api";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createPostApi, updatePostApi } from "@/lib/api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ArrowLeft,
   Bold,
@@ -15,17 +15,26 @@ import {
   Plus,
   Info,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 export default function CreatePost() {
   const router = useRouter();
 
   const queryClient = useQueryClient();
 
-  const createPost = useMutation({
-    mutationFn: (data) => createPostApi(data.title, data.content),
+  const searchParams = useSearchParams();
+  const editId = searchParams.get("edit");
 
-    onSuccess: (data) => {
+  const createOreditPost = useMutation({
+    mutationFn: (data) => {
+      if (editId) {
+        return updatePostApi(editId, data.title, data.content);
+      } else {
+        return createPostApi(data.title, data.content);
+      }
+    },
+
+    onSuccess: () => {
       queryClient.invalidateQueries(["posts"]);
       console.log("작성 성공");
       router.push("/main");
@@ -35,8 +44,21 @@ export default function CreatePost() {
     },
   });
 
+  const { data: existingPost } = useQuery({
+    queryKey: ["post", editId],
+    queryFn: () => getPostDetailApi(editId),
+    enabled: !!editId, // editId 있을 때만 실행
+  });
+
+  useEffect(() => {
+    if (existingPost) {
+      setTitle(existingPost.title);
+      setContent(existingPost.content);
+    }
+  }, [existingPost]);
+
   const onSubmit = (data) => {
-    createPost.mutate(data);
+    createOreditPost.mutate(data);
   };
 
   const [showTitle, setShowTitle] = useState(false);

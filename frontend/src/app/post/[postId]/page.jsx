@@ -13,9 +13,10 @@ import {
   Loader2,
   CornerDownRight,
   LogOut,
+  FileEdit,
 } from "lucide-react";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import { deletePostApi, getPostDetailApi } from "@/lib/api";
+import { deletePostApi, getMe, getPostDetailApi } from "@/lib/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   DropdownMenu,
@@ -59,6 +60,11 @@ export default function Post() {
     },
   });
 
+  const { data: user } = useQuery({
+    queryKey: ["me"],
+    queryFn: getMe,
+  });
+
   if (isLoading)
     return (
       <div className="flex h-full w-full items-center justify-center p-10">
@@ -96,7 +102,7 @@ export default function Post() {
                   size="icon"
                 >
                   <Avatar>
-                    <AvatarImage src="/default-avatar.png" alt="프로필" />
+                    <AvatarImage src={user?.picture || "/default-avatar.png"} />
                     <AvatarFallback>
                       <User className="h-5 w-5" />
                     </AvatarFallback>
@@ -156,6 +162,12 @@ export default function Post() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="min-w-fit pr-4">
+                  <DropdownMenuItem
+                    onClick={() => router.push(`/post/create?edit=${postId}`)}
+                    className="cursor-pointer font-bold text-[#09aa5c]"
+                  >
+                    <FileEdit></FileEdit>수정
+                  </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => deletePost.mutate(postId)}
                     className="cursor-pointer font-bold text-red-500"

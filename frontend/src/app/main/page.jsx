@@ -21,11 +21,11 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import PostContainer from "@/components/main/PostContaioner";
-import { useQuery } from "@tanstack/react-query";
-import { getPostsApi } from "@/lib/api";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { getMe, getPostsApi } from "@/lib/api";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -55,10 +55,42 @@ export default function Home() {
     router.push("/auth/login");
   };
 
-  // 목데이터 가져오기
-  const { data: posts, isLoading } = useQuery({
-    queryKey: ["posts"],
-    queryFn: getPostsApi,
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useInfiniteQuery({
+      queryKey: ["posts"],
+      queryFn: ({ pageParam = 1 }) => getPostsApi(pageParam),
+      getNextPageParam: (lastPage, pages) => {
+        return lastPage.length > 0 ? pages.length + 1 : undefined;
+      },
+    });
+  // 데이터 구조 변경!
+  const posts = data?.pages.flat() || [];
+
+  const loadMoreRef = useRef(null);
+  useEffect(() => {
+    if (!hasNextPage || isFetchingNextPage) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        console.log("📄 다음 페이지 로딩 시작!", {
+          현재페이지: data?.pages.length,
+          총게시물: posts.length,
+          hasNextPage,
+        });
+        fetchNextPage();
+      }
+    });
+
+    if (loadMoreRef.current) {
+      observer.observe(loadMoreRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  const { data: user } = useQuery({
+    queryKey: ["me"],
+    queryFn: getMe,
   });
 
   return (
@@ -93,7 +125,7 @@ export default function Home() {
                   size="icon"
                 >
                   <Avatar>
-                    <AvatarImage src="/default-avatar.png" alt="프로필" />
+                    <AvatarImage src={user?.picture || "/default-avatar.png"} />
                     <AvatarFallback>
                       <User className="h-5 w-5" />
                     </AvatarFallback>
@@ -176,19 +208,26 @@ export default function Home() {
             posts?.map((post, index) => (
               <Link key={post.id} href={`post/${post.id}`}>
                 <PostContainer
-                  key={post.id}
-                  count={index + 1}
-                  title={post.title}
-                  summary={post.content}
-                  nickname={post.author.username}
-                  authorRole={post.author.role}
-                  profileImage={post.author.picture}
-                  likes={post.likeCount}
-                  views={post.viewCount}
+                  count={index + 1} // ← key 제거!
+                  title={post?.title}
+                  summary={post?.content}
+                  nickname={post?.author?.username}
+                  authorRole={post?.author?.role}
+                  profileImage={post?.author?.picture}
+                  likes={post?.likeCount}
+                  views={post?.viewCount}
                 />
                 {index < posts.length - 1 && <Separator />}
               </Link>
             ))
+          )}
+          {hasNextPage && (
+            <div
+              ref={loadMoreRef}
+              className="flex items-center justify-center p-10"
+            >
+              <Loader2 className="h-8 w-8 animate-spin text-[#09aa5c]" />
+            </div>
           )}
         </div>
       </div>

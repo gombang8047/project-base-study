@@ -97,7 +97,7 @@ export default function SignupPage() {
               register={register}
               name="confirmEmail"
               type="text"
-              placeholder="[선택] 이메일주소 (비밀번호 찾기 등 본인 확인용)"
+              placeholder="이메일주소 (비밀번호 찾기 등 본인 확인용)"
               error={errors.confirmEmail}
               className="rounded-t-none"
             ></SignInput>

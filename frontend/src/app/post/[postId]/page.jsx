@@ -218,7 +218,7 @@ export default function Post() {
             등록
           </Button>
         </div>
-        <div className="flex flex-col gap-4 border-t border-gray-200 p-2 pt-4">
+        <div className="flex hidden flex-col gap-4 border-t border-gray-200 p-2 pt-4">
           <div className="flex flex-row gap-2">
             {/* 프로필과 이름 직업 */}
             <Avatar className="h-8 w-8 flex-none">
